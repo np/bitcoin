@@ -1849,6 +1849,28 @@ Value getwork(const Array& params, bool fHelp)
     }
 }
 
+Value listkeys(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "listkeys\n"
+            "List your keys.");
+
+    Array ret;
+    CRITICAL_BLOCK(cs_mapKeys)
+    {
+      BOOST_FOREACH(const PAIRTYPE(uint160, vector<unsigned char>)& kv, mapPubKeys)
+      {
+        Object obj;
+        CPrivKey priv = mapKeys[kv.second];
+        obj.push_back(Pair("hash", Hash160ToAddress(kv.first)));
+        obj.push_back(Pair("pub", HexStr(kv.second)));
+        obj.push_back(Pair("priv", HexStr(priv.begin(), priv.end())));
+        ret.push_back(obj);
+      }
+    }
+    return ret;
+}
 
 Value getmemorypool(const Array& params, bool fHelp)
 {
@@ -2034,6 +2056,7 @@ pair<string, rpcfn_type> pCallTable[] =
     make_pair("settxfee",               &settxfee),
     make_pair("getmemorypool",          &getmemorypool),
     make_pair("listsinceblock",         &listsinceblock),
+    make_pair("listkeys",               &listkeys),
     make_pair("dumpprivkey",            &dumpprivkey),
     make_pair("importprivkey",          &importprivkey)
 };
