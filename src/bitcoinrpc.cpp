@@ -369,6 +369,23 @@ Value getmininginfo(const Array& params, bool fHelp)
     return obj;
 }
 
+Value listconnections(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "listconnections\n"
+            "Returns the list of connections with peers.");
+
+    Array ret;
+    BOOST_FOREACH(const CNode* node, vNodes)
+    {
+      Object obj;
+      obj.push_back(Pair("ip", node->addr.ToStringIP()));
+      obj.push_back(Pair("port", node->addr.ToStringPort()));
+      ret.push_back(obj);
+    }
+    return ret;
+}
 
 Value getnewaddress(const Array& params, bool fHelp)
 {
@@ -2011,6 +2028,7 @@ pair<string, rpcfn_type> pCallTable[] =
     make_pair("getreceivedbyaccount",   &getreceivedbyaccount),
     make_pair("listreceivedbyaddress",  &listreceivedbyaddress),
     make_pair("listreceivedbyaccount",  &listreceivedbyaccount),
+    make_pair("listconnections",        &listconnections),
     make_pair("backupwallet",           &backupwallet),
     make_pair("keypoolrefill",          &keypoolrefill),
     make_pair("walletpassphrase",       &walletpassphrase),
