@@ -663,7 +663,7 @@ public:
         nMessageStart = vSend.size();
         if (fDebug)
             printf("%s ", DateTimeStrFormat("%x %H:%M:%S", GetTime()).c_str());
-        printf("sending: %s ", pszCommand);
+//        printf("sending: %s ", pszCommand);
     }
 
     void AbortMessage()
